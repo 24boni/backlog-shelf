@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Seventeen PC games with their genre and why each is worth playing.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>The Backlog Shelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a store-shelf grid of capsule cards; one filter rail above, genre as a labelled eyebrow, players as a chip pinned to each card's foot. */
+:root {
+  --bg: #eceef2;
+  --surface: #ffffff;
+  --fg: #171a21;
+  --muted: #5a6170;
+  --line: #d5d9e1;
+  --accent: #1f6f8b;
+  --accent-ink: #ffffff;
+  --chip: #e3eef2;
+  --chip-ink: #1a5a71;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111318; --surface: #1a1d24; --fg: #e9ecf2; --muted: #9aa1b0; --line: #2a2f39;
+    --accent: #5fb8d6; --accent-ink: #0d1417; --chip: #1d313a; --chip-ink: #8fd0e6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111318; --surface: #1a1d24; --fg: #e9ecf2; --muted: #9aa1b0; --line: #2a2f39;
+  --accent: #5fb8d6; --accent-ink: #0d1417; --chip: #1d313a; --chip-ink: #8fd0e6;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+header { display: grid; gap: 8px; }
+h1 {
+  font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.05; letter-spacing: -0.02em; margin: 0; text-wrap: balance;
+}
+.lede { margin: 0; color: var(--muted); max-width: 62ch; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filters button {
+  font: 500 13px/1 var(--font-body); color: var(--fg); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer;
+}
+.filters button:hover { border-color: var(--accent); }
+.filters button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.filters button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.count { color: var(--muted); font-size: 13px; margin-left: auto; font-variant-numeric: tabular-nums; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 20px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  display: flex; flex-direction: column; min-width: 0;
+}
+.card img { display: block; width: 100%; max-width: 100%; aspect-ratio: 460 / 215; object-fit: cover; background: var(--line); }
+.body { display: flex; flex-direction: column; gap: 8px; padding: 16px 18px 18px; flex: 1; }
+.genre { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; line-height: 1.2; margin: 0; text-wrap: balance; }
+.why { margin: 0; color: var(--fg); }
+.foot { margin-top: auto; padding-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-weight: 500; background: var(--chip); color: var(--chip-ink); border-radius: 4px; padding: 3px 8px; }
+.note { color: var(--muted); font-size: 13px; margin: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .card { transition: transform .15s ease, border-color .15s ease; }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>The Backlog Shelf</h1>
+    <p class="lede">Seventeen PC games worth your evenings, from ten-hour puzzle runs to factories you will still be expanding next year. Each card says what kind of game it is and why it earns a spot.</p>
+  </header>
+
+  <div class="filters" role="group" aria-label="Filter by type">
+    <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+    <button type="button" id="f-survival" data-f="survival" aria-pressed="false">Survival &amp; crafting</button>
+    <button type="button" id="f-build" data-f="build" aria-pressed="false">Strategy &amp; automation</button>
+    <button type="button" id="f-rpg" data-f="rpg" aria-pressed="false">RPG &amp; story</button>
+    <button type="button" id="f-skill" data-f="skill" aria-pressed="false">Roguelike, puzzle &amp; platformer</button>
+    <button type="button" id="f-coop" data-f="coop" aria-pressed="false">Co-op</button>
+    <span class="count" id="count">17 games</span>
+  </div>
+
+  <main class="grid" id="grid">
+
+    <article class="card" data-cat="skill" data-coop="1">
+      <img src="img/620.jpg" loading="lazy" width="460" height="215" alt="Portal 2 store header">
+      <div class="body">
+        <span class="genre">First-person puzzle</span>
+        <h2>Portal &amp; Portal 2</h2>
+        <p class="why">Two portals, one gun, and physics puzzles that teach you their rules without a single tutorial screen. GLaDOS and Wheatley carry some of the funniest writing in games. Portal is a tight 3-hour classic; Portal 2 adds a full story campaign plus a separate two-player co-op campaign.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">2-player co-op (Portal 2)</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="skill" data-coop="1">
+      <img src="img/2868840.jpg" loading="lazy" width="460" height="215" alt="Slay the Spire 2 store header">
+      <div class="body">
+        <span class="genre">Roguelike deckbuilder</span>
+        <h2>Slay the Spire 2</h2>
+        <p class="why">The sequel to the game that defined the genre. Build a deck card by card as you climb, combine relics into absurd synergies, and lose a run because of one greedy pick. Short runs, endless replay value, and now with co-op climbs.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Online co-op</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="survival" data-coop="0">
+      <img src="img/264710.jpg" loading="lazy" width="460" height="215" alt="Subnautica store header">
+      <div class="body">
+        <span class="genre">Underwater survival &amp; exploration</span>
+        <h2>Subnautica</h2>
+        <p class="why">You crash on an ocean planet and the only way forward is down. Beautiful reefs turn into pitch-black trenches with things moving in them. The story is found, not told, and every new depth you can reach feels earned. One of the best survival games ever made.</p>
+        <div class="foot"><span class="chip">Single-player</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="build" data-coop="1">
+      <img src="img/427520.jpg" loading="lazy" width="460" height="215" alt="Factorio store header">
+      <div class="body">
+        <span class="genre">Factory automation</span>
+        <h2>Factorio</h2>
+        <p class="why">You start mining iron by hand and end up running a rail-fed megabase that launches rockets. Every bottleneck is a puzzle you created yourself. Dangerously addictive, superbly optimized, and the Space Age expansion takes it to other planets.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Online co-op</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="build" data-coop="1">
+      <img src="img/526870.jpg" loading="lazy" width="460" height="215" alt="Satisfactory store header">
+      <div class="body">
+        <span class="genre">3D factory building</span>
+        <h2>Satisfactory</h2>
+        <p class="why">Factorio-style production chains, but first-person in a huge hand-crafted alien world. You build up, across canyons and through jungles, with conveyor spaghetti you can walk under. Great for friends who like building more than fighting.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Co-op up to 4</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="survival" data-coop="1">
+      <img src="img/1604030.jpg" loading="lazy" width="460" height="215" alt="V Rising store header">
+      <div class="body">
+        <span class="genre">Vampire survival action RPG</span>
+        <h2>V Rising</h2>
+        <p class="why">Survival crafting with real action-RPG combat. Raise a castle, hunt V Blood bosses for new powers, and plan every trip around the sunlight that burns you. Play it solo, with friends on PvE, or on PvP servers.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Co-op / PvP servers</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="survival" data-coop="1">
+      <img src="img/892970.jpg" loading="lazy" width="460" height="215" alt="Valheim store header">
+      <div class="body">
+        <span class="genre">Viking survival &amp; co-op building</span>
+        <h2>Valheim</h2>
+        <p class="why">A Norse afterlife where each boss unlocks the next biome. The building system is satisfying, sailing in a storm is genuinely tense, and it is at its best as a group project with up to 10 friends on one world.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Co-op up to 10</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="build" data-coop="1">
+      <img src="img/813780.jpg" loading="lazy" width="460" height="215" alt="Age of Empires II: Definitive Edition store header">
+      <div class="body">
+        <span class="genre">Real-time strategy</span>
+        <h2>Age of Empires II: Definitive Edition</h2>
+        <p class="why">The RTS that people still play competitively more than 25 years after release. Dozens of civilizations, historical campaigns from Joan of Arc to Genghis Khan, and a remaster that keeps the original feel while fixing the old pathing pain.</p>
+        <div class="foot"><span class="chip">Campaigns</span><span class="chip">Online multiplayer</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="rpg" data-coop="1">
+      <img src="img/1086940.jpg" loading="lazy" width="460" height="215" alt="Baldur's Gate 3 store header">
+      <div class="body">
+        <span class="genre">Turn-based CRPG (D&amp;D 5e)</span>
+        <h2>Baldur's Gate 3</h2>
+        <p class="why">A full Dungeons &amp; Dragons campaign where your choices change what happens, sometimes hours later. Combat is a systemic sandbox: shove, burn, stack crates, talk your way out. Excellent companions, and the whole campaign can be played in co-op.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Co-op up to 4</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="skill" data-coop="0">
+      <img src="img/504230.jpg" loading="lazy" width="460" height="215" alt="Celeste store header">
+      <div class="body">
+        <span class="genre">Precision platformer</span>
+        <h2>Celeste</h2>
+        <p class="why">Climb a mountain one screen at a time with some of the tightest controls in any platformer. It is hard, but checkpoints are instant and an Assist Mode is there if you need it. The story about anxiety and the soundtrack both hit harder than you would expect.</p>
+        <div class="foot"><span class="chip">Single-player</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="rpg" data-coop="0">
+      <img src="img/1903340.jpg" loading="lazy" width="460" height="215" alt="Clair Obscur: Expedition 33 store header">
+      <div class="body">
+        <span class="genre">Turn-based RPG with real-time parries</span>
+        <h2>Clair Obscur: Expedition 33</h2>
+        <p class="why">Classic turn-based combat where you dodge and parry enemy attacks in real time, so every fight keeps you engaged. A Belle Époque–inspired world, a story with real emotional weight, and a standout soundtrack. One of the most acclaimed RPGs of recent years.</p>
+        <div class="foot"><span class="chip">Single-player</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="survival" data-coop="1">
+      <img src="img/1621690.jpg" loading="lazy" width="460" height="215" alt="Core Keeper store header">
+      <div class="body">
+        <span class="genre">Top-down mining sandbox</span>
+        <h2>Core Keeper</h2>
+        <p class="why">Dig outward from a mysterious core through an underground world of biomes, bosses, farms and automation. Think Terraria seen from above. It is relaxed when you want it to be and great with up to 8 friends.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Co-op up to 8</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="survival" data-coop="1">
+      <img src="img/1203620.jpg" loading="lazy" width="460" height="215" alt="Enshrouded store header">
+      <div class="body">
+        <span class="genre">Voxel survival action RPG</span>
+        <h2>Enshrouded</h2>
+        <p class="why">A large open world you can dig through and build anywhere, block by block, while pushing back a deadly fog. Real class builds and dungeon exploration set it apart from pure crafting games, and the base building is among the best in the genre.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Co-op up to 16</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="skill" data-coop="0">
+      <img src="img/1145360.jpg" loading="lazy" width="460" height="215" alt="Hades store header">
+      <div class="body">
+        <span class="genre">Action roguelike</span>
+        <h2>Hades</h2>
+        <p class="why">Fight your way out of the Greek underworld with fast, precise combat and boons from the Olympian gods. Dying is part of the story: each run moves relationships and plot forward, so even failure feels like progress. Fully voiced and beautifully drawn.</p>
+        <div class="foot"><span class="chip">Single-player</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="skill" data-coop="0">
+      <img src="img/367520.jpg" loading="lazy" width="460" height="215" alt="Hollow Knight store header">
+      <div class="body">
+        <span class="genre">Metroidvania</span>
+        <h2>Hollow Knight</h2>
+        <p class="why">A huge, hand-drawn ruined kingdom of bugs to explore, map and slowly understand. Combat is demanding but fair, the bosses are memorable, and the amount of content for the price is absurd. When you finish, Silksong is waiting.</p>
+        <div class="foot"><span class="chip">Single-player</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="rpg" data-coop="0">
+      <img src="img/1030840.jpg" loading="lazy" width="460" height="215" alt="Mafia: Definitive Edition store header">
+      <div class="body">
+        <span class="genre">Story-driven third-person action</span>
+        <h2>Mafia: Definitive Edition</h2>
+        <p class="why">A ground-up remake of the 2002 Czech classic from Illusion Softworks. Taxi driver Tommy Angelo rises through the family in 1930s Lost Heaven. It plays like a gangster film: cinematic, linear and focused, with period cars and tommy-gun shootouts.</p>
+        <div class="foot"><span class="chip">Single-player</span></div>
+      </div>
+    </article>
+
+    <article class="card" data-cat="survival" data-coop="1">
+      <img src="img/1623730.jpg" loading="lazy" width="460" height="215" alt="Palworld store header">
+      <div class="body">
+        <span class="genre">Creature-collecting survival</span>
+        <h2>Palworld</h2>
+        <p class="why">Catch creatures called Pals, then put them to work in your base, ride them, or fight alongside them with guns. It is chaotic and silly in the best way, and the base automation gives it real depth. Best enjoyed with friends.</p>
+        <div class="foot"><span class="chip">Single-player</span><span class="chip">Online co-op</span></div>
+      </div>
+    </article>
+
+  </main>
+
+  <p class="note">Images: Steam store headers. "Mafia" here means the 2020 Definitive Edition remake.</p>
+</div>
+
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.filters button');
+  var cards = document.querySelectorAll('.card');
+  var count = document.getElementById('count');
+  function apply(f) {
+    var n = 0;
+    cards.forEach(function (c) {
+      var show = f === 'all' || (f === 'coop' ? c.dataset.coop === '1' : c.dataset.cat === f);
+      c.hidden = !show;
+      if (show) n++;
+    });
+    count.textContent = n + (n === 1 ? ' game' : ' games');
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.f === f)); });
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.f); }); });
+})();
+</script>
+</body>
+</html>
